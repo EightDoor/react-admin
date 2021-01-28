@@ -18,14 +18,6 @@ const Home = () => {
   }, [index])
   return (
     <>
-      <Button
-        onClick={() => setIndex(index + 1)}
-        style={{
-          margin: 8,
-        }}
-      >
-        重新加载
-      </Button>
       <ProLayout
         style={{
           height: '100vh',
@@ -39,7 +31,7 @@ const Home = () => {
         }}
         menuDataRender={() => menuData}
       >
-        <PageContainer content="欢迎使用">Hello World</PageContainer>
+        <PageContainer content="欢迎使用">首页哦</PageContainer>
       </ProLayout>
     </>
   )
