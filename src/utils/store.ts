@@ -1,8 +1,7 @@
-import localforage from 'localforage';
+import localforage from 'localforage'
 
 const store = localforage.createInstance({
-  name: "react-admin-vite"
+  name: 'react-admin',
 })
-
 
 export { store }

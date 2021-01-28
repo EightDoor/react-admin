@@ -78,7 +78,7 @@ module.exports = {
     ],
     'unicorn/prefer-query-selector': ERROR,
     'unicorn/no-null': OFF,
-
+    'no-use-before-define': OFF,
     '@typescript-eslint/no-useless-constructor': ERROR,
     '@typescript-eslint/no-empty-function': WARN,
     '@typescript-eslint/no-var-requires': OFF,
@@ -107,7 +107,7 @@ module.exports = {
     'no-plusplus': OFF,
     'no-console': OFF,
     'class-methods-use-this': ERROR,
-    'jsx-quotes': [ERROR, 'prefer-single'],
+    'jsx-quotes': [OFF, 'prefer-single'],
     'global-require': OFF,
   },
 }

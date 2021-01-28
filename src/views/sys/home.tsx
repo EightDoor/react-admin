@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import type { MenuDataItem } from '@ant-design/pro-layout';
-import ProLayout, { PageContainer } from '@ant-design/pro-layout';
-import { Button } from 'antd';
-import customMenuDate from './customMenu';
-export default () => {
-  const [menuData, setMenuData] = useState<MenuDataItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [index, setIndex] = useState(0);
+import React, { useState, useEffect } from 'react'
+import type { MenuDataItem } from '@ant-design/pro-layout'
+import ProLayout, { PageContainer } from '@ant-design/pro-layout'
+import { Button } from 'antd'
+import customMenuDate from './customMenu'
+
+const Home = () => {
+  const [menuData, setMenuData] = useState<MenuDataItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [index, setIndex] = useState(0)
   useEffect(() => {
-    setMenuData([]);
-    setLoading(true);
+    setMenuData([])
+    setLoading(true)
     setTimeout(() => {
-      setMenuData(customMenuDate);
-      setLoading(false);
-    }, 2000);
-  }, [index]);
+      setMenuData(customMenuDate)
+      setLoading(false)
+    }, 2000)
+  }, [index])
   return (
     <>
       <Button
@@ -41,5 +42,7 @@ export default () => {
         <PageContainer content="欢迎使用">Hello World</PageContainer>
       </ProLayout>
     </>
-  );
-};
+  )
+}
+
+export default Home
