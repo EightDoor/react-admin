@@ -3296,6 +3296,11 @@ debug@^4.0.0, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.2.0, debug@^4.3
   dependencies:
     ms "2.1.2"
 
+debugout.js@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/debugout.js/download/debugout.js-1.0.0.tgz#9121a0da8eecc89d32f4b4fff72562a7840a5ce5"
+  integrity sha1-kSGg2o7syJ0y9LT/9yVip4QKXOU=
+
 decamelize-keys@^1.0.0, decamelize-keys@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npm.taobao.org/decamelize-keys/download/decamelize-keys-1.1.0.tgz#d171a87933252807eb3cb61dc1c1445d078df2d9"

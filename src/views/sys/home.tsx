@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import type { MenuDataItem } from '@ant-design/pro-layout'
 import ProLayout, { PageContainer } from '@ant-design/pro-layout'
 import { useHistory } from 'react-router-dom'
+import { Ulog } from '@/utils/log'
 import customMenuDate from './customMenu'
 
 const Home = () => {
@@ -11,6 +12,7 @@ const Home = () => {
   const [index, setIndex] = useState(0)
   const [pathname, setPathname] = useState<string>('/')
   useEffect(() => {
+    Ulog.log('test')
     setMenuData([])
     setLoading(true)
     setTimeout(() => {
