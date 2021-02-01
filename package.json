@@ -32,6 +32,7 @@
     "antd": "^4.11.2",
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",
+    "normalize.css": "^8.0.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-router-dom": "^5.2.0"

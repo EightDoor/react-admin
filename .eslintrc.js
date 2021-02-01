@@ -70,6 +70,9 @@ module.exports = {
     ],
     'unicorn/no-array-instanceof': WARN,
     'unicorn/no-for-loop': WARN, // 使用 for of 和 .entries 代替传统的 for 循环
+    'unicorn/consistent-function-scoping': OFF,
+    'jsx-a11y/no-static-element-interactions': OFF,
+    'jsx-a11y/anchor-is-valid': OFF,
     'unicorn/prefer-add-event-listener': [
       ERROR,
       {

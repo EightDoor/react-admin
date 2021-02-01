@@ -17,7 +17,11 @@ export default [
     ],
   },
   {
+    path: '/test',
+    name: 'test',
+  },
+  {
     path: '/demo',
     name: 'demo',
   },
-];
+]
