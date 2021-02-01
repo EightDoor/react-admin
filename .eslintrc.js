@@ -73,6 +73,7 @@ module.exports = {
     'unicorn/consistent-function-scoping': OFF,
     'jsx-a11y/no-static-element-interactions': OFF,
     'jsx-a11y/anchor-is-valid': OFF,
+    'react/require-default-props': OFF,
     'unicorn/prefer-add-event-listener': [
       ERROR,
       {

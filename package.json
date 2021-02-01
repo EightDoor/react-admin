@@ -28,8 +28,10 @@
   },
   "dependencies": {
     "@ant-design/pro-layout": "^6.13.0",
+    "@ant-design/pro-table": "^2.27.2",
     "@babel/runtime-corejs3": "^7.12.5",
     "antd": "^4.11.2",
+    "axios": "^0.21.1",
     "debugout.js": "^1.0.0",
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",

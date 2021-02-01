@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import type { MenuDataItem } from '@ant-design/pro-layout'
 import ProLayout, { PageContainer } from '@ant-design/pro-layout'
-import { useHistory } from 'react-router-dom'
+import { Route, useHistory } from 'react-router-dom'
 import { Ulog } from '@/utils/log'
 import customMenuDate from './customMenu'
+import Test from '../test'
+import SysUser from './user/user'
 
 const Home = () => {
   const history = useHistory()
   const [menuData, setMenuData] = useState<MenuDataItem[]>([])
   const [loading, setLoading] = useState(true)
-  const [index, setIndex] = useState(0)
   const [pathname, setPathname] = useState<string>('/')
   useEffect(() => {
     Ulog.log('test')
@@ -23,6 +24,7 @@ const Home = () => {
 
   const onMenuHeaderClick = (val: React.MouseEvent<HTMLDivElement>) => {
     history.push('/')
+    setPathname('/')
   }
   const Change = (val: MenuDataItem) => {
     console.log('🚀 ~ file: home.tsx ~ line 25 ~ Change ~ val', val.path)
@@ -58,7 +60,10 @@ const Home = () => {
         location={{ pathname }}
         menuDataRender={() => menuData}
       >
-        <PageContainer content="欢迎使用">首页哦</PageContainer>
+        <PageContainer content="欢迎使用">
+          <Route exact path="/test" component={Test} />
+          <Route exact path="/sys/user" component={SysUser} />
+        </PageContainer>
       </ProLayout>
     </>
   )
