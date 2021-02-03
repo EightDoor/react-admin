@@ -101,7 +101,7 @@ module.exports = {
 
     'jsx-a11y/click-events-have-key-events': OFF,
     'jsx-a11y/no-noninteractive-element-interactions': OFF,
-
+    'promise/always-return': OFF,
     'lines-between-class-members': [ERROR, 'always'],
     // indent: [ERROR, 2, { SwitchCase: 1 }],
     'linebreak-style': [ERROR, 'unix'],

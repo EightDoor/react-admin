@@ -1,5 +1,5 @@
 const config = {
-  baseUrl: '',
+  baseUrl: '/api/',
 }
 
 export default config
