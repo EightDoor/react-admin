@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import CommonTable, { TableActions } from '@/components/table/table'
 import { ProColumns } from '@ant-design/pro-table'
 import { SysUser } from '@/type/user/user'
-import { Tag } from 'antd'
+import { Button, Tag } from 'antd'
+import { CommonFormType } from '@/type/commonType'
+import CommonForm from './form'
 
 const SysUserView = () => {
   const actions: TableActions[] = [
@@ -49,12 +51,22 @@ const SysUserView = () => {
       hideInSearch: true,
     },
   ]
+  const commonFormRef = useRef<CommonFormType>(null)
   const ActionFun = (val: string) => {
     console.log('🚀 ~ file: user.tsx ~ line 59 ~ Edit ~ row', val)
   }
+  const toolBar = () => [
+    <Button key="add" onClick={() => Add()} type="primary">
+      新建
+    </Button>,
+  ]
+  const Add = () => {
+    commonFormRef.current?.show('add')
+  }
   return (
     <>
-      <CommonTable<SysUser> actionFun={ActionFun} actions={actions} columns={columns} url="user" />
+      <CommonTable<SysUser> toolBar={toolBar()} actionFun={ActionFun} actions={actions} columns={columns} url="user" />
+      <CommonForm ref={commonFormRef} />
     </>
   )
 }

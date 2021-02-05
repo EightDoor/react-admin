@@ -18,3 +18,10 @@ interface Result<T> {
   total: number
   data: T[]
 }
+
+// 表单
+export interface CommonFormType {
+  show: (val: CommonFormTypeShow) => void
+}
+
+export type CommonFormTypeShow = 'add' | 'edit'

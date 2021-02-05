@@ -21,6 +21,7 @@ interface Props<T> {
   sort?: string
   // 操作栏
   actions?: TableActions[]
+  // 操作方法
   actionFun?: (val: string) => void
 }
 export interface TableActions {
