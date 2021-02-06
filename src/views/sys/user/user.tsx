@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import CommonTable, { TableActions } from '@/components/table/table'
 import { ProColumns } from '@ant-design/pro-table'
-import { SysUser } from '@/type/user/user'
+import { SysUser } from '@/type/sys/sys'
 import { Button, Tag } from 'antd'
 import { CommonFormType } from '@/type/commonType'
 import CommonForm from './form'

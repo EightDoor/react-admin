@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import ProTable, { ProColumns } from '@ant-design/pro-table'
+import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table'
 import { http } from '@/utils/request'
 import { TableResult } from '@/type/commonType'
 import { useMount } from 'ahooks'
 import CommonButton, { CommonButtonType } from '@/components/button/button'
 import DelPopConfim from '@/components/button/delPopConfim'
+import { TableFormItem } from '@ant-design/pro-table/lib/components/Form'
 
+export type CommonTableActionRef = React.MutableRefObject<ActionType | undefined> | ((actionRef: ActionType) => void)
 interface Props<T> {
   // 表格行
   columns: ProColumns<T, 'text'>[]
@@ -23,6 +25,10 @@ interface Props<T> {
   actions?: TableActions[]
   // 操作方法
   actionFun?: (val: string) => void
+  // form实例
+  formRef?: TableFormItem<T>['formRef']
+  // table实例
+  actionRef?: CommonTableActionRef
 }
 export interface TableActions {
   title: string
@@ -97,6 +103,8 @@ function CommonTable<T>(props: Props<T>) {
         search={{
           labelWidth: 'auto',
         }}
+        actionRef={props.actionRef}
+        formRef={props.formRef}
         request={async (params, sorter, filter) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
           const searchData: any = {}

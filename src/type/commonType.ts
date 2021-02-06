@@ -4,8 +4,8 @@ import { AxiosResponse } from 'axios'
 export interface BaseType {
   id: string
   createdAt: string
-  updatedAt: string
-  deletedAt: string
+  updatedAt?: string
+  deletedAt?: string
 }
 
 // 表格返回

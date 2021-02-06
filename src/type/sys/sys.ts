@@ -17,3 +17,12 @@ export interface SysUser extends BaseType {
   // 手机号码
   phoneNum: string
 }
+
+export interface SysDept extends BaseType {
+  parentId: number
+  // 部门名称
+  name?: string
+  // 排序
+  orderNum?: number
+  children?: SysDept[]
+}

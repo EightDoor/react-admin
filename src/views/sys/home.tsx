@@ -6,6 +6,7 @@ import { Ulog } from '@/utils/log'
 import customMenuDate from './customMenu'
 import Test from '../test'
 import SysUser from './user/user'
+import SysDeptView from './dept/dept'
 
 const Home = () => {
   const history = useHistory()
@@ -63,6 +64,7 @@ const Home = () => {
         <PageContainer content="欢迎使用">
           <Route exact path="/test" component={Test} />
           <Route exact path="/sys/user" component={SysUser} />
+          <Route exact path="/sys/dept" component={SysDeptView} />
         </PageContainer>
       </ProLayout>
     </>
