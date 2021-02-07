@@ -6,6 +6,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const { ESBuildPlugin, ESBuildMinifyPlugin } = require('esbuild-loader')
 
 const { PROJECT_PATH, isDev } = require('../constant')
 
@@ -67,6 +68,9 @@ module.exports = {
             compress: { pure_funcs: ['console.log'] },
           },
         }),
+      new ESBuildMinifyPlugin({
+        target: 'es2015',
+      }),
     ].filter(Boolean),
   },
   resolve: {
@@ -78,6 +82,7 @@ module.exports = {
     },
   },
   plugins: [
+    new ESBuildPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(PROJECT_PATH, './index.html'),
       filename: 'index.html',
@@ -122,11 +127,20 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(tsx?|js)$/,
-        loader: 'babel-loader',
-        options: { cacheDirectory: true },
-        exclude: /node_modules/,
+        test: /\.tsx?$/,
+        loader: 'esbuild-loader',
+        options: {
+          loader: 'tsx',
+          target: 'es2015',
+          // tsconfigRaw: require('../../tsconfig.json')
+        },
       },
+      // {
+      //   test: /\.(tsx?|js)$/,
+      //   loader: 'babel-loader',
+      //   options: { cacheDirectory: true },
+      //   exclude: /node_modules/,
+      // },
       {
         test: /\.css$/,
         use: getCssLoaders(1),
