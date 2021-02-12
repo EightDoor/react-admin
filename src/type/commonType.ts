@@ -20,8 +20,8 @@ interface Result<T> {
 }
 
 // 表单
-export interface CommonFormType {
-  show: (val: CommonFormTypeShow) => void
+export interface CommonFormType<T = any> {
+  show: (val: CommonFormTypeShow, data?: T) => void
 }
 
 export type CommonFormTypeShow = 'add' | 'edit'

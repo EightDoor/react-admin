@@ -45,9 +45,16 @@ const SysDeptView = () => {
       hideInSearch: true,
     },
   ]
-  const commonFormRef = useRef<CommonFormType>(null)
-  const ActionFun = (val: string) => {
+  const commonFormRef = useRef<CommonFormType<SysDept>>(null)
+  const ActionFun = (val: string, data: SysDept | undefined) => {
     console.log('🚀 ~ file: user.tsx ~ line 59 ~ Edit ~ row', val)
+    switch (val) {
+      case 'edit':
+        commonFormRef.current?.show('edit', data)
+        break
+      default:
+        break
+    }
   }
   const toolBar = () => [
     <Button key="add" onClick={() => Add()} type="primary">
@@ -85,6 +92,7 @@ const SysDeptView = () => {
     <>
       <CommonTable<SysDept>
         actionRef={ref}
+        isTree
         toolBar={toolBar()}
         actionFun={ActionFun}
         actions={actions}

@@ -16,9 +16,12 @@ const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
   const [treeData, setTreeData] = useState<SysDept[]>([])
 
   useImperativeHandle(ref, () => ({
-    show: (val: CommonFormTypeShow) => {
+    show: (val: CommonFormTypeShow, data) => {
       if (val === 'add') {
         // do
+      } else if (val === 'edit') {
+        // do
+        console.log(data, 'data')
       }
       setDrawerVisit(true)
     },

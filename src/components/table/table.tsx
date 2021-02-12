@@ -6,6 +6,7 @@ import { useMount } from 'ahooks'
 import CommonButton, { CommonButtonType } from '@/components/button/button'
 import DelPopConfim from '@/components/button/delPopConfim'
 import { TableFormItem } from '@ant-design/pro-table/lib/components/Form'
+import { formatTree } from '@/utils'
 
 export type CommonTableActionRef = React.MutableRefObject<ActionType | undefined> | ((actionRef: ActionType) => void)
 interface Props<T> {
@@ -24,18 +25,20 @@ interface Props<T> {
   // 操作栏
   actions?: TableActions[]
   // 操作方法
-  actionFun?: (val: string) => void
+  actionFun?: (val: string, data?: T) => void
   // form实例
   formRef?: TableFormItem<T>['formRef']
   // table实例
   actionRef?: CommonTableActionRef
+  // 是否树形结构
+  isTree?: boolean
 }
 export interface TableActions {
   title: string
   type?: 'default' | 'del'
   key: string
 }
-function CommonTable<T>(props: Props<T>) {
+function CommonTable<T = any>(props: Props<T>) {
   const [columns, setColumns] = useState<ProColumns<T, 'text'>[]>([])
   const ToolBar = () => {
     let list: React.ReactNode[] = []
@@ -59,7 +62,7 @@ function CommonTable<T>(props: Props<T>) {
                 <DelPopConfim
                   ok={() => {
                     if (props.actionFun) {
-                      props.actionFun(item.key)
+                      props.actionFun(item.key, row)
                     }
                   }}
                   title={item.title}
@@ -78,7 +81,7 @@ function CommonTable<T>(props: Props<T>) {
             key="button"
             change={(val: string) => {
               if (props.actionFun) {
-                props.actionFun(val)
+                props.actionFun(val, row)
               }
             }}
             list={defaultButton}
@@ -127,8 +130,13 @@ function CommonTable<T>(props: Props<T>) {
                 },
               })
               .then((res: TableResult) => {
+                let result = res.data.data
+                // 树形结构组合返回
+                if (props.isTree) {
+                  result = formatTree(res.data.data)
+                }
                 resolve({
-                  data: res.data.data,
+                  data: result,
                   success: true,
                   total: res.data.total,
                 })
