@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react'
-import CommonTable, { CommonTableActionRef, TableActions } from '@/components/table/table'
+import CommonTable, { TableActions } from '@/components/table/table'
 import { ActionType, ProColumns } from '@ant-design/pro-table'
 import { SysDept } from '@/type/sys/sys'
-import { Button, FormInstance, message } from 'antd'
+import { Button, message } from 'antd'
 import { CommonFormType, TableResult } from '@/type/commonType'
 import { useMount } from 'ahooks'
 import { http } from '@/utils/request'
@@ -54,8 +54,8 @@ const SysDeptView = () => {
         commonFormRef.current?.show('edit', data)
         break
       case 'del':
-        await http.delete(url + data?.id)
-        getDeptList()
+        await http.delete(`${url}/${data?.id}`)
+        Refresh()
         message.success('删除成功')
         break
       default:
@@ -103,7 +103,7 @@ const SysDeptView = () => {
         actionFun={ActionFun}
         actions={actions}
         columns={columns}
-        url="dept"
+        url={url}
       />
       <CommonForm url={url} Refresh={() => Refresh()} ref={commonFormRef} treeData={treeData} />
     </>
