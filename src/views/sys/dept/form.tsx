@@ -3,25 +3,30 @@ import { SysDept } from '@/type/sys/sys'
 import { http } from '@/utils/request'
 import { DrawerForm, ProFormText } from '@ant-design/pro-form'
 import { message, Form, TreeSelect } from 'antd'
+import { useForm } from 'antd/lib/form/Form'
+import { cloneDeep } from 'lodash'
 import React, { useState, useImperativeHandle, forwardRef, Ref, useEffect } from 'react'
 
 interface Props {
   treeData: SysDept[]
   // 刷新
   Refresh: () => void
+  url: string
 }
 const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
   const [drawerVisit, setDrawerVisit] = useState(false)
   const [title, setTitle] = useState('添加')
   const [treeData, setTreeData] = useState<SysDept[]>([])
+  const [editId, setEditId] = useState<string>()
+  const [form] = useForm()
 
   useImperativeHandle(ref, () => ({
     show: (val: CommonFormTypeShow, data) => {
       if (val === 'add') {
         // do
       } else if (val === 'edit') {
-        // do
-        console.log(data, 'data')
+        setEditId(data.id)
+        form.setFieldsValue(data)
       }
       setDrawerVisit(true)
     },
@@ -34,14 +39,21 @@ const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
   return (
     <>
       <DrawerForm
+        form={form}
         visible={drawerVisit}
         onVisibleChange={setDrawerVisit}
         title={title}
         onFinish={async (values) => {
-          console.log('🚀 ~ file: form.tsx ~ line 39 ~ onFinish={ ~ values', values)
+          const data = cloneDeep(values)
+          console.log('🚀 ~ file: form.tsx ~ line 39 ~ onFinish={ ~ values', data)
           try {
-            const result = await http.post('dept', values)
-            console.log(result)
+            // 修改
+            if (editId) {
+              data.id = editId
+              await http.patch(`${props.url}/${editId}`, data)
+            } else {
+              await http.post(props.url, data)
+            }
             props.Refresh()
             message.success('提交成功')
             return true

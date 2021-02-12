@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import CommonTable, { CommonTableActionRef, TableActions } from '@/components/table/table'
 import { ActionType, ProColumns } from '@ant-design/pro-table'
 import { SysDept } from '@/type/sys/sys'
-import { Button, FormInstance } from 'antd'
+import { Button, FormInstance, message } from 'antd'
 import { CommonFormType, TableResult } from '@/type/commonType'
 import { useMount } from 'ahooks'
 import { http } from '@/utils/request'
@@ -10,6 +10,7 @@ import { formatTree } from '@/utils'
 import CommonForm from './form'
 
 const SysDeptView = () => {
+  const url = 'dept'
   const ref = useRef<ActionType>()
   const [treeData, setTreeData] = useState<SysDept[]>([])
   const actions: TableActions[] = [
@@ -46,11 +47,16 @@ const SysDeptView = () => {
     },
   ]
   const commonFormRef = useRef<CommonFormType<SysDept>>(null)
-  const ActionFun = (val: string, data: SysDept | undefined) => {
+  const ActionFun = async (val: string, data: SysDept | undefined) => {
     console.log('🚀 ~ file: user.tsx ~ line 59 ~ Edit ~ row', val)
     switch (val) {
       case 'edit':
         commonFormRef.current?.show('edit', data)
+        break
+      case 'del':
+        await http.delete(url + data?.id)
+        getDeptList()
+        message.success('删除成功')
         break
       default:
         break
@@ -69,7 +75,7 @@ const SysDeptView = () => {
   })
   const getDeptList = () => {
     http
-      .get('dept', {
+      .get(url, {
         params: {
           page: 1,
           limit: 1000,
@@ -99,7 +105,7 @@ const SysDeptView = () => {
         columns={columns}
         url="dept"
       />
-      <CommonForm Refresh={() => Refresh()} ref={commonFormRef} treeData={treeData} />
+      <CommonForm url={url} Refresh={() => Refresh()} ref={commonFormRef} treeData={treeData} />
     </>
   )
 }
