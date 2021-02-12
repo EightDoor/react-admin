@@ -23,8 +23,10 @@ const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
   useImperativeHandle(ref, () => ({
     show: (val: CommonFormTypeShow, data) => {
       if (val === 'add') {
-        // do
+        setEditId('')
+        setTitle('添加')
       } else if (val === 'edit') {
+        setTitle('修改')
         setEditId(data.id)
         form.setFieldsValue(data)
       }

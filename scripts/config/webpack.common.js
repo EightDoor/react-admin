@@ -8,7 +8,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const { ESBuildPlugin, ESBuildMinifyPlugin } = require('esbuild-loader')
 
+const threadLoader = require('thread-loader')
 const { PROJECT_PATH, isDev } = require('../constant')
+
+// 可以通过预热 worker 池(worker pool)来防止启动 worker 时的高延时。
+threadLoader.warmup({}, ['css-loader', 'postcss-loader', 'less-loader', 'url-loader', 'babel-loader'])
 
 const getCssLoaders = (importLoaders) => [
   isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
@@ -50,6 +54,7 @@ module.exports = {
   output: {
     filename: `js/[name]${isDev ? '' : '.[fullhash:8]'}.js`,
     path: path.resolve(PROJECT_PATH, './dist'),
+    publicPath: '/',
   },
   optimization: {
     splitChunks: {
@@ -127,13 +132,20 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.(js)$/,
+        include: path.resolve('src'),
+        use: ['thread-loader'],
+      },
+      {
+        test: /\.(tsx?|js)$/,
         loader: 'esbuild-loader',
         options: {
           loader: 'tsx',
           target: 'es2015',
           // tsconfigRaw: require('../../tsconfig.json')
         },
+        include: path.resolve('src'),
+        exclude: /node_modules/,
       },
       // {
       //   test: /\.(tsx?|js)$/,
