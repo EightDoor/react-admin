@@ -22,6 +22,7 @@ const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
   const [editId, setEditId] = useState<string>()
   const [form] = useForm()
   const [options, setOptions] = useState<CommonOptions[]>([])
+  const [type, setType] = useState<number>()
   const isOptions = [
     {
       label: '是',
@@ -32,23 +33,9 @@ const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
       value: 0,
     },
   ]
-  const [menus, setMenus] = useState<SysMenu[]>([])
-
   useMount(() => {
     getOptions()
-    getMenuTree()
   })
-  const getMenuTree = () => {
-    http
-      .get('menu')
-      .then((res: TableResult) => {
-        setMenus(formatTree(res.data.data))
-        console.log('🚀 ~ file: form.tsx ~ line 50 ~ http.get ~ res.data.data', res.data.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
   const getOptions = () => {
     const vv: CommonOptions[] = []
     formatMenuType().options.forEach((item) => {
@@ -62,11 +49,13 @@ const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
   useImperativeHandle(ref, () => ({
     show: (val: CommonFormTypeShow, data) => {
       if (val === 'add') {
+        form.resetFields()
         setEditId('')
         setTitle('添加')
       } else if (val === 'edit') {
         setTitle('修改')
         setEditId(data.id)
+        setType(data.type)
         form.setFieldsValue(data)
       }
       setDrawerVisit(true)
@@ -74,15 +63,21 @@ const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
   }))
 
   useEffect(() => {
-    console.log(props.treeData, 'tree')
     setTreeData(props.treeData)
   }, [props.treeData])
+
+  const onValuesChange = (changedValues: SysMenu) => {
+    if (changedValues.type) {
+      setType(changedValues.type)
+    }
+  }
   return (
     <>
       <DrawerForm
         form={form}
         visible={drawerVisit}
         onVisibleChange={setDrawerVisit}
+        onValuesChange={onValuesChange}
         title={title}
         onFinish={async (values) => {
           const data = cloneDeep(values)
@@ -111,6 +106,12 @@ const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
         }}
       >
         <ProFormText rules={[{ required: true, message: '请输入标题' }]} label="标题" name="title" />
+        <ProFormSelect
+          options={options}
+          name="type"
+          label="菜单类型"
+          rules={[{ required: true, message: '请选择菜单类型' }]}
+        />
         <Form.Item name="parentId" label="父级">
           <TreeSelect
             showSearch
@@ -122,20 +123,18 @@ const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
             treeData={treeData}
           />
         </Form.Item>
-        <ProFormSelect
-          options={options}
-          name="type"
-          label="菜单类型"
-          rules={[{ required: true, message: '请选择菜单类型' }]}
-        />
-        <ProFormText name="perms" label="权限标识" placeholder="请输入权限标识" />
-        <ProFormText name="name" label="菜单标识" placeholder="请输入菜单标识" />
-        <ProFormText name="path" label="路径" placeholder="请输入路径" />
-        <ProFormText name="component" label="组件地址" placeholder="请输入组件地址" />
-        <ProFormText name="redirect" label="重定向地址" placeholder="请输入重定向地址" />
-        <ProFormText name="icon" label="图标" placeholder="请输入图标" />
-        <ProFormSelect options={isOptions} name="hidden" label="是否隐藏" />
-        <ProFormSelect options={isOptions} name="isHome" label="是否首页" />
+        <ProFormText name="name" label="菜单标识(name)" placeholder="请输入菜单标识" />
+        {type !== 3 ? (
+          <>
+            <ProFormText name="perms" label="权限标识(perms)" placeholder="请输入权限标识" />
+            <ProFormText name="path" label="路径(path)" placeholder="请输入路径" />
+            <ProFormText name="component" label="组件地址(component)" placeholder="请输入组件地址" />
+            <ProFormText name="redirect" label="重定向地址(redirect)" placeholder="请输入重定向地址" />
+            <ProFormText name="icon" label="图标" placeholder="请输入图标" />
+            <ProFormSelect options={isOptions} name="hidden" label="是否隐藏" />
+            <ProFormSelect options={isOptions} name="isHome" label="是否首页" />
+          </>
+        ) : null}
         <ProFormText fieldProps={{ type: 'number' }} label="排序" name="orderNum" />
       </DrawerForm>
     </>
