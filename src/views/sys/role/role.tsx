@@ -1,20 +1,27 @@
 import React, { useRef, useState } from 'react'
 import CommonTable, { TableActions } from '@/components/table/table'
 import { ActionType, ProColumns } from '@ant-design/pro-table'
-import { SysRole, SysUser } from '@/type/sys/sys'
-import { Button, message, Tag } from 'antd'
-import { CommonFormType } from '@/type/commonType'
-import { ModalForm, ProFormText } from '@ant-design/pro-form'
+import { SysMenu, SysRole } from '@/type/sys/sys'
+import { Button, message, Tree, Form, Spin } from 'antd'
+import { CommonFormType, TableResult } from '@/type/commonType'
+import { ModalForm } from '@ant-design/pro-form'
 import { useForm } from 'antd/lib/form/Form'
 import { http } from '@/utils/request'
+import { useMount } from 'ahooks'
+import { formatTree } from '@/utils'
+import { Key } from 'webpack-merge/dist/types'
 import CommonForm from './form'
 
+type RoleMenu = SysMenu & { key: number | string }
 const SysRole = () => {
   const url = 'role'
   const [visible, setVisible] = useState(false)
   const [form] = useForm()
   const [editId, setEditId] = useState<string>()
   const tableRef = useRef<ActionType>()
+  const [treeData, setTreeData] = useState<RoleMenu[]>([])
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([])
+  const [treeLoading, setTreeLoading] = useState(false)
   const actions: TableActions[] = [
     {
       title: '编辑',
@@ -60,8 +67,9 @@ const SysRole = () => {
         message.success('删除成功')
         tableRef.current?.reload()
         break
-      case 'editPass':
+      case 'menu':
         setEditId(data?.id)
+        getRoleMenus(data?.id)
         setVisible(true)
         break
       default:
@@ -79,6 +87,55 @@ const SysRole = () => {
   const onRefresh = () => {
     tableRef.current?.reload()
   }
+  useMount(() => {
+    getDeptList()
+  })
+  const getDeptList = () => {
+    http
+      .get('menu', {
+        params: {
+          page: 1,
+          limit: 1000,
+        },
+      })
+      .then((res: TableResult<RoleMenu>) => {
+        const { data } = res.data
+        setTreeData(formatTree(data))
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+  const onCheck = (checked: any): void => {
+    console.log('onCheck', checked)
+    setCheckedKeys(checked)
+  }
+  const getRoleMenus = (id?: string) => {
+    setTreeLoading(true)
+    http
+      .get(`role/menus/${id}`)
+      .then((res) => {
+        if (res.data.menuId) {
+          try {
+            const result = res.data.menuId.split(',')
+            const v: number[] = []
+            result.forEach((item: string) => {
+              v.push(Number(item))
+            })
+            setCheckedKeys(v)
+          } catch (error) {
+            console.log(error)
+            setCheckedKeys([])
+          }
+        } else {
+          setCheckedKeys([])
+        }
+        setTreeLoading(false)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
   return (
     <>
       <CommonTable<SysRole>
@@ -93,22 +150,21 @@ const SysRole = () => {
 
       {/* 修改密码 */}
       <ModalForm<{
-        passWord: string
-        passWordN: string
+        select: string[]
       }>
         form={form}
         visible={visible}
-        title="修改密码"
-        onFinish={async (values) => {
-          console.log(values.passWord)
-          if (values.passWord === values.passWordN) {
-            await http.patch(`${url}/${editId}`, { passWord: values.passWord })
-            message.success('提交成功')
-            tableRef.current?.reload()
-            setVisible(false)
-          } else {
-            message.info('二次输入的密码不一致')
+        title="菜单分配"
+        onFinish={async () => {
+          console.log(checkedKeys)
+          const data = {
+            menuId: checkedKeys.join(','),
+            roleId: editId,
           }
+          await http.post('role/relationAndMenu', data)
+          message.success('提交成功')
+          tableRef.current?.reload()
+          setVisible(false)
           return true
         }}
         modalProps={{
@@ -117,18 +173,11 @@ const SysRole = () => {
           },
         }}
       >
-        <ProFormText.Password
-          rules={[{ required: true, message: '请输入密码' }]}
-          name="passWord"
-          placeholder="请输入密码"
-          label="密码"
-        />
-        <ProFormText.Password
-          rules={[{ required: true, message: '请再次输入密码' }]}
-          name="passWordN"
-          placeholder="请再次输入密码"
-          label="请再次输入密码"
-        />
+        <div style={{ height: '300px', overflow: 'scroll' }}>
+          <Spin spinning={treeLoading}>
+            <Tree defaultExpandAll checkable onCheck={onCheck} checkedKeys={checkedKeys} treeData={treeData} />
+          </Spin>
+        </div>
       </ModalForm>
     </>
   )

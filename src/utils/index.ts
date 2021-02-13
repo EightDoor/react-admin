@@ -18,6 +18,7 @@ function formatTree<T extends SysDept>(list: T[]): AntTreeType<T>[] {
   result.map((item) => {
     item.title = item.title || item.name
     item.value = item.id
+    item.key = item.id
     return item
   })
   for (const element of result) {

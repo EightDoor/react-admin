@@ -25,6 +25,7 @@ export interface SysDept extends BaseType {
   // 排序
   orderNum?: number
   children?: SysDept[]
+  key?: string
 }
 
 export interface SysRole extends BaseType {
@@ -59,4 +60,5 @@ export interface SysMenu extends BaseType {
   hidden: string
   // 是否首页
   isHome: string
+  key?: string
 }
