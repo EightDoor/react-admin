@@ -1,5 +1,6 @@
 import { SysDept } from '@/type/sys/sys'
 import { cloneDeep } from 'lodash'
+import { Key } from 'react'
 
 type AntTreeType<T> = T & TreeType
 
@@ -15,7 +16,7 @@ function formatTree<T extends SysDept>(list: T[]): AntTreeType<T>[] {
   const map: any = {}
   const tree: AntTreeType<T>[] = []
   result.map((item) => {
-    item.title = item.name
+    item.title = item.title || item.name
     item.value = item.id
     return item
   })
@@ -36,4 +37,28 @@ function formatTree<T extends SysDept>(list: T[]): AntTreeType<T>[] {
   return tree
 }
 
-export { formatTree }
+const formatMenuType = (val?: Key) => {
+  const data = {
+    title: '-',
+    color: 'blue',
+    options: [1, 2, 3],
+  }
+  switch (Number(val)) {
+    case 1:
+      data.title = '目录'
+      data.color = 'green'
+      break
+    case 2:
+      data.title = '菜单'
+      data.color = 'geekblue'
+      break
+    case 3:
+      data.title = '按钮'
+      data.color = 'gold'
+      break
+    default:
+  }
+  return data
+}
+
+export { formatTree, formatMenuType }

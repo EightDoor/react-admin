@@ -26,3 +26,37 @@ export interface SysDept extends BaseType {
   orderNum?: number
   children?: SysDept[]
 }
+
+export interface SysRole extends BaseType {
+  // 备注
+  remark: string
+  // 名称
+  roleName: string
+}
+
+export interface SysMenu extends BaseType {
+  // 父级id 一级为0
+  parentId: number
+  // 菜单名称
+  title: string
+  // 菜单类型： 1. 目录 2. 菜单 3. 按钮
+  type: number
+  // 排序
+  orderNum: number
+  // 权限标识
+  perms: string
+  // 菜单标识
+  name: string
+  // 路径
+  path: string
+  // 组件地址
+  component: string
+  // 重定向地址
+  redirect: string
+  // 图标
+  icon: string
+  // 是否隐藏
+  hidden: string
+  // 是否首页
+  isHome: string
+}

@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios'
+import { Key } from 'react'
 
 // 基础结构
 export interface BaseType {
@@ -24,4 +25,8 @@ export interface CommonFormType<T = any> {
   show: (val: CommonFormTypeShow, data?: T) => void
 }
 
+export interface CommonOptions {
+  label: string
+  value: Key
+}
 export type CommonFormTypeShow = 'add' | 'edit'

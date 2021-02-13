@@ -32,6 +32,8 @@ interface Props<T> {
   actionRef?: CommonTableActionRef
   // 是否树形结构
   isTree?: boolean
+  // 分页
+  pageSize?: number
 }
 export interface TableActions {
   title: string
@@ -146,7 +148,7 @@ function CommonTable<T = any>(props: Props<T>) {
               })
           })
         }}
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: props.pageSize ?? 0 }}
         dateFormatter="string"
         headerTitle={props.headerTitle}
         toolBarRender={() => ToolBar()}

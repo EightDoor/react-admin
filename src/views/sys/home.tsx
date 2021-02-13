@@ -7,6 +7,8 @@ import customMenuDate from './customMenu'
 import Test from '../test'
 import SysUser from './user/user'
 import SysDeptView from './dept/dept'
+import SysRole from './role/role'
+import SysMenu from './menu/menu'
 
 const Home = () => {
   const history = useHistory()
@@ -65,6 +67,8 @@ const Home = () => {
           <Route exact path="/test" component={Test} />
           <Route exact path="/sys/user" component={SysUser} />
           <Route exact path="/sys/dept" component={SysDeptView} />
+          <Route exact path="/sys/role" component={SysRole} />
+          <Route exact path="/sys/menu" component={SysMenu} />
         </PageContainer>
       </ProLayout>
     </>
