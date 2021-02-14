@@ -1,19 +1,25 @@
 import React, { useRef, useState } from 'react'
 import CommonTable, { TableActions } from '@/components/table/table'
 import { ActionType, ProColumns } from '@ant-design/pro-table'
-import { SysUser } from '@/type/sys/sys'
-import { Button, message, Tag } from 'antd'
-import { CommonFormType } from '@/type/commonType'
-import { ModalForm, ProFormText } from '@ant-design/pro-form'
+import { SysRole, SysUser } from '@/type/sys/sys'
+import { Button, message, Spin, Tag } from 'antd'
+import { CommonFormType, CommonOptions, TableResult } from '@/type/commonType'
+import { ModalForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
 import { useForm } from 'antd/lib/form/Form'
 import { http } from '@/utils/request'
+import { useMount } from 'ahooks'
 import CommonForm from './form'
 
 const SysUserView = () => {
   const url = 'user'
   const [visible, setVisible] = useState(false)
   const [form] = useForm()
+  const [roleForm] = useForm()
+  const [roleVis, setRoleVis] = useState(false)
+  const [loadingRole, setLoadingRole] = useState(false)
   const [editId, setEditId] = useState<string>()
+  const [userEditId, setUserEditId] = useState<string>()
+  const [roleOptions, setRoleOptions] = useState<CommonOptions[]>([])
   const tableRef = useRef<ActionType>()
   const actions: TableActions[] = [
     {
@@ -23,6 +29,10 @@ const SysUserView = () => {
     {
       title: '修改密码',
       key: 'editPass',
+    },
+    {
+      title: '角色分配',
+      key: 'roleAssignment',
     },
     {
       title: '删除',
@@ -79,9 +89,67 @@ const SysUserView = () => {
         setEditId(data?.id)
         setVisible(true)
         break
+      case 'roleAssignment':
+        roleForm.resetFields()
+        getRoleList(data?.id)
+        setUserEditId(data?.id)
+        setRoleVis(true)
+        break
       default:
         break
     }
+  }
+  const getRoleList = (id?: string) => {
+    setLoadingRole(true)
+    http
+      .get(`/user/roleList/${id}`)
+      .then((res) => {
+        console.log(res.data)
+        const result: number[] = []
+        if (res.data.roleId) {
+          try {
+            res.data.roleId.split(',').forEach((v: string) => {
+              result.push(Number(v))
+            })
+            console.log(result, 'r')
+            roleForm.setFieldsValue({
+              selectRoles: result,
+            })
+          } catch (error) {
+            console.log(error, '获取拥有角色')
+          }
+        }
+        setLoadingRole(false)
+      })
+      .catch((error) => {
+        console.log(error)
+        setLoadingRole(false)
+      })
+  }
+  useMount(() => {
+    getRoleOptions()
+  })
+  const getRoleOptions = () => {
+    http
+      .get('role', {
+        params: {
+          page: 1,
+          limgit: 1000,
+        },
+      })
+      .then((res: TableResult<SysRole>) => {
+        const result: CommonOptions[] = []
+        res.data.data.forEach((item) => {
+          result.push({
+            label: item.roleName,
+            value: item.id,
+          })
+        })
+        setRoleOptions(result)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
   const toolBar = () => [
     <Button key="add" onClick={() => Add()} type="primary">
@@ -144,6 +212,39 @@ const SysUserView = () => {
           placeholder="请再次输入密码"
           label="请再次输入密码"
         />
+      </ModalForm>
+      {/* 角色分配 */}
+      <ModalForm
+        form={roleForm}
+        visible={roleVis}
+        title="角色分配"
+        modalProps={{
+          onCancel: () => {
+            setRoleVis(false)
+          },
+        }}
+        onFinish={async (values) => {
+          console.log(values.selectRoles)
+          const data = {
+            userId: userEditId,
+            roleId: values.selectRoles.join(','),
+          }
+          await http
+            .post('user/userRole', data)
+            .then((res) => {
+              console.log(res.data.data)
+              message.success('提交成功')
+              setRoleVis(false)
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+          return true
+        }}
+      >
+        <Spin spinning={loadingRole}>
+          <ProFormCheckbox.Group name="selectRoles" layout="horizontal" options={roleOptions} />
+        </Spin>
       </ModalForm>
     </>
   )
