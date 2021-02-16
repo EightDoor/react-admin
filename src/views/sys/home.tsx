@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import type { MenuDataItem } from '@ant-design/pro-layout'
 import ProLayout, { PageContainer } from '@ant-design/pro-layout'
-import { Route, useHistory } from 'react-router-dom'
+import { RouteProps, useHistory, Switch } from 'react-router-dom'
 import { Ulog } from '@/utils/log'
+import { RouteWithSubRoutes } from '@/App'
 import customMenuDate from './customMenu'
-import Test from '../test'
-import SysUser from './user/user'
-import SysDeptView from './dept/dept'
-import SysRole from './role/role'
-import SysMenu from './menu/menu'
 
-const Home = () => {
+interface Props {
+  routes: RouteProps[]
+}
+const Home = (props: Props) => {
   const history = useHistory()
   const [menuData, setMenuData] = useState<MenuDataItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -64,11 +63,11 @@ const Home = () => {
         menuDataRender={() => menuData}
       >
         <PageContainer content="欢迎使用">
-          <Route exact path="/test" component={Test} />
-          <Route exact path="/sys/user" component={SysUser} />
-          <Route exact path="/sys/dept" component={SysDeptView} />
-          <Route exact path="/sys/role" component={SysRole} />
-          <Route exact path="/sys/menu" component={SysMenu} />
+          <Switch>
+            {props.routes.map((route) => (
+              <RouteWithSubRoutes key={route.path} {...route} />
+            ))}
+          </Switch>
         </PageContainer>
       </ProLayout>
     </>
