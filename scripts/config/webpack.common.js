@@ -7,8 +7,28 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const { ESBuildPlugin, ESBuildMinifyPlugin } = require('esbuild-loader')
+const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent')
 
 const { PROJECT_PATH, isDev } = require('../constant')
+
+const lessRegex = /\.(less)$/
+const lessModuleRegex = /\.module\.(less)$/
+
+const getStyleLoaders = (cssOptions, preProcessor) => {
+  const loaders = [
+    isDev && require.resolve('style-loader'),
+    !isDev && {
+      loader: MiniCssExtractPlugin.loader,
+      // css is located in `static/css`, use '../../' to locate index.html folder
+      // in production `paths.publicUrlOrPath` can be a relative path
+    },
+    {
+      loader: require.resolve('css-loader'),
+      options: cssOptions,
+    },
+  ].filter(Boolean)
+  return loaders
+}
 
 const getCssLoaders = (importLoaders) => [
   isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
@@ -149,7 +169,21 @@ module.exports = {
         use: getCssLoaders(1),
       },
       {
+        test: lessModuleRegex,
+        use: getStyleLoaders(
+          {
+            importLoaders: 3,
+            sourceMap: isDev,
+            modules: {
+              getLocalIdent: getCSSModuleLocalIdent,
+            },
+          },
+          'less-loader',
+        ),
+      },
+      {
         test: /\.less$/,
+        exclude: lessModuleRegex,
         use: [
           ...getCssLoaders(2),
           {

@@ -5,6 +5,7 @@ import { RouteProps, useHistory, Switch } from 'react-router-dom'
 import { Ulog } from '@/utils/log'
 import { RouteWithSubRoutes } from '@/App'
 import customMenuDate from './customMenu'
+import RightContentRender from './rightContentRender'
 
 interface Props {
   routes: RouteProps[]
@@ -38,6 +39,8 @@ const Home = (props: Props) => {
   return (
     <>
       <ProLayout
+        fixSiderbar
+        fixedHeader
         style={{
           height: '100vh',
         }}
@@ -55,6 +58,7 @@ const Home = (props: Props) => {
             </a>
           </>
         )}
+        rightContentRender={RightContentRender}
         onMenuHeaderClick={onMenuHeaderClick}
         // location={{
         //   pathname: '/welcome/welcome',

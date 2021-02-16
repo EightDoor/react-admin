@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, RouteProps, Switch } from 'react-router-dom'
 
-import SysHome from '@/views/sys/home'
+import SysHome from '@/views/sys/home/home'
 import Login from '@/views/login/login'
 import { ConfigProvider } from 'antd'
 import zhCN from 'antd/lib/locale/zh_CN'
@@ -13,6 +13,11 @@ import NotFond from './views/sys/noFond'
 
 function App() {
   const routes: RouteProps[] = [
+    {
+      path: '/login',
+      exact: true,
+      component: Login,
+    },
     {
       path: '/',
       component: SysHome,
@@ -38,11 +43,6 @@ function App() {
           component: NotFond,
         },
       ],
-    },
-    {
-      path: '/login',
-      exact: true,
-      component: Login,
     },
     {
       path: '*',

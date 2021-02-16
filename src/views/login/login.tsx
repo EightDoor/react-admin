@@ -3,8 +3,8 @@ import { Button, Form, Input, message } from 'antd'
 import { useHistory } from 'react-router-dom'
 import { store } from '@/utils/store'
 
-// import styles from './login.module.less';
 import { TOKEN } from '@/utils/constant'
+import styles from './login.module.less'
 
 const layout = {
   labelCol: { span: 6 },
@@ -34,7 +34,7 @@ const LoginHome = () => {
   }
   return (
     <>
-      <div>
+      <div className={styles.container}>
         <h1>后台管理</h1>
         <Form form={form} {...layout}>
           <Form.Item rules={[{ required: true, message: '请输入' }]} name="username" label="用户名">
