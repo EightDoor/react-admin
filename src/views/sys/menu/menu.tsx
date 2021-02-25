@@ -142,6 +142,7 @@ const SysMenu = () => {
   return (
     <>
       <CommonTable<SysDept>
+        sort="orderNum,ASC"
         pageSize={pageSize}
         actionRef={ref}
         isTree

@@ -1,6 +1,6 @@
-import { CommonFormType, CommonFormTypeShow, CommonOptions, TableResult } from '@/type/commonType'
+import { CommonFormType, CommonFormTypeShow, CommonOptions } from '@/type/commonType'
 import { SysDept, SysMenu } from '@/type/sys/sys'
-import { formatMenuType, formatTree } from '@/utils'
+import { formatMenuType } from '@/utils'
 import { http } from '@/utils/request'
 import { DrawerForm, ProFormSelect, ProFormText } from '@ant-design/pro-form'
 import { useMount } from 'ahooks'
@@ -81,6 +81,11 @@ const CommonForm = (props: Props, ref: Ref<CommonFormType>) => {
         title={title}
         onFinish={async (values) => {
           const data = cloneDeep(values)
+
+          // 设置父级默认值为0
+          if (!data.parentId) {
+            data.parentId = 0
+          }
           console.log('🚀 ~ file: form.tsx ~ line 39 ~ onFinish={ ~ values', data)
           try {
             // 修改

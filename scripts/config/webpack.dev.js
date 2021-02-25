@@ -1,5 +1,6 @@
 const { merge } = require('webpack-merge')
 const webpack = require('webpack')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const proxySetting = require('../../src/setProxy')
 const common = require('./webpack.common')
 const { SERVER_HOST, SERVER_PORT } = require('../constant')
@@ -18,5 +19,5 @@ module.exports = merge(common, {
     proxy: { ...proxySetting },
     historyApiFallback: true,
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
+  plugins: [new webpack.HotModuleReplacementPlugin(), new ReactRefreshWebpackPlugin()],
 })

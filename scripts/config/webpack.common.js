@@ -147,23 +147,23 @@ module.exports = {
   ],
   module: {
     rules: [
-      {
-        test: /\.(tsx?|js)$/,
-        loader: 'esbuild-loader',
-        options: {
-          loader: 'tsx',
-          target: 'es2015',
-          // tsconfigRaw: require('../../tsconfig.json')
-        },
-        include: path.resolve('src'),
-        exclude: /node_modules/,
-      },
       // {
       //   test: /\.(tsx?|js)$/,
-      //   loader: 'babel-loader',
-      //   options: { cacheDirectory: true },
-      //   exclude: /node_modules/,
+      //   loader: 'esbuild-loader',
+      //   options: {
+      //     loader: 'tsx',
+      //     target: 'es2015',
+      //     // tsconfigRaw: require('../../tsconfig.json')
+
+      //   },
+      //   include: path.resolve('src'),
       // },
+      {
+        test: /\.(tsx?|js)$/,
+        loader: 'babel-loader',
+        options: { cacheDirectory: true, plugins: [isDev && require.resolve('react-refresh/babel')] },
+        exclude: /node_modules/,
+      },
       {
         test: /\.css$/,
         use: getCssLoaders(1),

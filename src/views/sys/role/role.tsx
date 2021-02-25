@@ -2,18 +2,17 @@ import React, { useRef, useState } from 'react'
 import CommonTable, { TableActions } from '@/components/table/table'
 import { ActionType, ProColumns } from '@ant-design/pro-table'
 import { SysMenu, SysRole } from '@/type/sys/sys'
-import { Button, message, Tree, Form, Spin } from 'antd'
+import { Button, message, Tree, Spin } from 'antd'
 import { CommonFormType, TableResult } from '@/type/commonType'
 import { ModalForm } from '@ant-design/pro-form'
 import { useForm } from 'antd/lib/form/Form'
 import { http } from '@/utils/request'
 import { useMount } from 'ahooks'
 import { formatTree } from '@/utils'
-import { Key } from 'webpack-merge/dist/types'
 import CommonForm from './form'
 
 type RoleMenu = SysMenu & { key: number | string }
-const SysRole = () => {
+const SysRoleView = () => {
   const url = 'role'
   const [visible, setVisible] = useState(false)
   const [form] = useForm()
@@ -183,4 +182,4 @@ const SysRole = () => {
   )
 }
 
-export default SysRole
+export default SysRoleView
