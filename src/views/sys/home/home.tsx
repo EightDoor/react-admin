@@ -30,7 +30,7 @@ const Home = (props: Props) => {
     setPathname('/')
   }
   const Change = (val: MenuDataItem) => {
-    console.log('🚀 ~ file: home.tsx ~ line 25 ~ Change ~ val', val.path)
+    console.log('🚀 ~ file: home.tsx ~ line 25 ~ Change ~ val123', val.path)
     if (val.path) {
       setPathname(val.path)
       history.push(val.path)
