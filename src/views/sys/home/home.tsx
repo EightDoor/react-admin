@@ -4,6 +4,9 @@ import ProLayout, { PageContainer } from '@ant-design/pro-layout'
 import { RouteProps, useHistory, Switch } from 'react-router-dom'
 import { Ulog } from '@/utils/log'
 import { RouteWithSubRoutes } from '@/App'
+import { store } from '@/utils/store'
+import { message } from 'antd'
+import { logOutUtils } from '@/utils'
 import customMenuDate from './customMenu'
 import RightContentRender from './rightContentRender'
 
@@ -25,12 +28,13 @@ const Home = (props: Props) => {
     }, 2000)
   }, [])
 
-  const onMenuHeaderClick = (val: React.MouseEvent<HTMLDivElement>) => {
-    history.push('/')
+  const onMenuHeaderClick = async (val: React.MouseEvent<HTMLDivElement>) => {
+    message.loading('退出中...')
+    await logOutUtils()
     setPathname('/')
   }
   const Change = (val: MenuDataItem) => {
-    console.log('🚀 ~ file: home.tsx ~ line 25 ~ Change ~ val123', val.path)
+    console.log('🚀 ~ file: home.tsx ~ line 25 ~ Change ~ val', val.path)
     if (val.path) {
       setPathname(val.path)
       history.push(val.path)

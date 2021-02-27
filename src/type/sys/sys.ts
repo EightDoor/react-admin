@@ -62,3 +62,9 @@ export interface SysMenu extends BaseType {
   isHome: string
   key?: string
 }
+
+export interface SysUserInfo {
+  menus: SysMenu[]
+  roles: SysRole[]
+  userInfo: SysUser | any
+}

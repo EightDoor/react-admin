@@ -1,11 +1,17 @@
-import React from 'react'
-import { Button, Form, Input, message } from 'antd'
+import React, { useState } from 'react'
+import { Button, Form, Input, notification } from 'antd'
 import { useHistory } from 'react-router-dom'
 import { store } from '@/utils/store'
 
 import { TOKEN } from '@/utils/constant'
+import { http } from '@/utils/request'
+import { LoginSuccess } from '@/type/commonType'
 import styles from './login.module.less'
 
+interface LoginType {
+  username: string
+  password: string
+}
 const layout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
@@ -15,18 +21,42 @@ const tailLayout = {
 }
 
 const LoginHome = () => {
+  const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const history = useHistory()
 
   const loginFun = () => {
     form
       .validateFields()
-      .then((res: any) => {
+      .then(async (res: LoginType) => {
         console.log(res)
-        store.setItem(TOKEN, Date.now())
-        history.push('/')
-        message.success('登录成功')
-        return true
+        setLoading(true)
+        try {
+          const result = await http.post<LoginSuccess>('auth/login', res)
+          if (result.data.msg === 'success') {
+            console.log(result, 'r')
+            const { data } = result
+            await store.setItem(TOKEN, data.accessToken)
+            notification.open({
+              message: '提示',
+              description: '登陆成功',
+              type: 'success',
+            })
+            history.push('/')
+            return true
+          }
+          notification.open({
+            message: '提示',
+            description: result.data.msg,
+            type: 'error',
+          })
+
+          setLoading(false)
+        } catch (error) {
+          console.error(error)
+          setLoading(false)
+        }
+        return false
       })
       .catch((error) => {
         console.log(error)
@@ -44,7 +74,7 @@ const LoginHome = () => {
             <Input.Password onPressEnter={() => loginFun()} placeholder="请输入密码" />
           </Form.Item>
           <Form.Item {...tailLayout}>
-            <Button type="primary" onClick={() => loginFun()}>
+            <Button loading={loading} type="primary" onClick={() => loginFun()}>
               登录
             </Button>
           </Form.Item>

@@ -1,6 +1,10 @@
-import { SysDept } from '@/type/sys/sys'
+import { SysDept, SysUser, SysUserInfo } from '@/type/sys/sys'
+import { message } from 'antd'
 import { cloneDeep } from 'lodash'
 import { Key } from 'react'
+import { TOKEN } from './constant'
+import { http } from './request'
+import { store } from './store'
 
 type AntTreeType<T> = T & TreeType
 
@@ -38,6 +42,10 @@ function formatTree<T extends SysDept>(list: T[]): AntTreeType<T>[] {
   return tree
 }
 
+/**
+ * 菜单类型
+ * @param val  值
+ */
 const formatMenuType = (val?: Key) => {
   const data = {
     title: '-',
@@ -61,5 +69,50 @@ const formatMenuType = (val?: Key) => {
   }
   return data
 }
+/**
+ * 获取的token
+ */
+const getTokenValue = () => store.getItem(TOKEN)
+/**
+ * 获取用户信息
+ */
+const getUserInfo = (): Promise<SysUserInfo> =>
+  new Promise((resolve, reject) => {
+    getTokenValue()
+      .then((v) => {
+        if (v) {
+          // eslint-disable-next-line promise/no-nesting
+          http
+            .get<SysUserInfo>('auth/userInfo', {
+              headers: {
+                Authorization: `Bearer ${v}`,
+              },
+              params: {
+                sort: 'orderNum,ASC',
+              },
+            })
+            .then((res) => {
+              resolve(res.data)
+            })
+            .catch((error) => {
+              reject(error)
+            })
+        } else {
+          // eslint-disable-next-line prefer-promise-reject-errors
+          reject('token获取错误')
+        }
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
 
-export { formatTree, formatMenuType }
+/**
+ * 退出登陆
+ */
+const logOutUtils = async () => {
+  await store.clear()
+  message.destroy()
+  window.location.replace('/login')
+}
+export { formatTree, formatMenuType, getUserInfo, logOutUtils, getTokenValue }

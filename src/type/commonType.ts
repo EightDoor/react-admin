@@ -29,4 +29,10 @@ export interface CommonOptions {
   label: string
   value: Key
 }
+// 登陆成功
+export interface LoginSuccess {
+  accessToken: string
+  expiresIn: string
+  msg: string
+}
 export type CommonFormTypeShow = 'add' | 'edit'

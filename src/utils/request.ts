@@ -12,11 +12,10 @@ const instance = axios.create({
 instance.interceptors.request.use(
   async (request) => {
     await store.getItem(TOKEN).then((res) => {
-      const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJ1c2VySWQiOjEwLCJpYXQiOjE2MTQyNjExNTQsImV4cCI6MTYxNDg2NTk1NH0.XoOxPrM-subLh4qMgqMaqh3dpYfoIfkp9dHAt3KggNE'
+      console.log(res, '请求传递的token')
       if (res) {
         request.headers = {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${res}`,
         }
       }
     })
