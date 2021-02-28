@@ -80,6 +80,8 @@ module.exports = {
         excludedPackages: ['koa', 'sax'],
       },
     ],
+    '@typescript-eslint/ban-ts-comment': OFF,
+    'array-callback-return': OFF,
     'unicorn/prefer-query-selector': ERROR,
     'unicorn/no-null': OFF,
     'no-use-before-define': OFF,

@@ -9,7 +9,6 @@ import zhCN from 'antd/lib/locale/zh_CN'
 import SysUserView from '@/views/sys/user/user'
 import SysDeptView from '@/views/sys/dept/dept'
 import SysRole from '@/views/sys/role/role'
-import SysMenu from '@/views/sys/menu/menu'
 import NotFond from '@/views/sys/noFond'
 import { useMount } from 'ahooks'
 import Lottie, { Options } from 'react-lottie'
@@ -17,12 +16,18 @@ import * as animationData from '@/assets/loading-spinner.json'
 import { getTokenValue, getUserInfo, logOutUtils } from './utils'
 import { store, RootState, Dispatch } from './store/store'
 import styles from './App.module.less'
+import { SysMenu } from './type/sys/sys'
+import SysMenuCom from './views/sys/menu/menu'
 
+interface MenusShow extends RouteProps {
+  id?: string
+  parentId?: number
+}
 function App() {
   const history = useHistory()
   // const userInfoState = useSelector((state: RootState) => state.sys)
   // const dispatch = useDispatch<Dispatch>()
-  const baseRoutes: RouteProps[] = [
+  const baseRoutes: MenusShow[] = [
     {
       path: '/login',
       exact: true,
@@ -46,7 +51,7 @@ function App() {
         },
         {
           path: '/sys/menu',
-          component: SysMenu,
+          component: SysMenuCom,
         },
         {
           path: '*',
@@ -54,10 +59,14 @@ function App() {
         },
       ],
     },
+    {
+      path: '*',
+      component: NotFond,
+    },
   ]
 
   const [loading, setLoading] = useState(true)
-  const routes = useRef<RouteProps[]>(baseRoutes)
+  const routes = useRef<MenusShow[]>(baseRoutes)
 
   // useMount(async () => {
   //   setLoading(true)
@@ -68,21 +77,31 @@ function App() {
   //       .then((res) => {
   //         console.log(res, 'userInfo')
 
-  //         res.menus.forEach((item) => {
-  //           const obj: RouteProps = {
-  //             path: item.path,
-  //             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //         const resultR: MenusShow[] = []
+  //         const treeObj: any = {}
+  //         res.menus.map((item: SysMenu) => {
+  //           treeObj[item.id] = item
+  //           item.parentId = Number(item.parentId)
+  //           // @ts-ignore
+  //           item.component = () => import(`./views${item.component}`)
+  //         })
+  //         for (const node of res.menus) {
+  //           if (node.parentId !== 0) {
+  //             if (treeObj[node.parentId].children) {
+  //               node.path = treeObj[node.parentId].path + node.path
+  //               treeObj[node.parentId].children.push(node)
+  //             } else {
+  //               treeObj[node.parentId].children = [node]
+  //             }
+  //           } else {
   //             // @ts-ignore
-  //             component: () => import(item.component),
+  //             resultR.push(node)
   //           }
-  //           baseRoutes.push(obj)
-  //         })
-  //         baseRoutes.push({
-  //           path: '*',
-  //           component: NotFond,
-  //         })
-  //         console.log(routes.current, 'routes')
-  //         routes.current = baseRoutes
+  //         }
+  //         console.log(treeObj, 'obj')
+  //         console.log(resultR, 'rrr')
+  //         routes.current[1].children = resultR
+  //         console.log(routes.current)
   //         setLoading(false)
   //       })
   //       .catch((error) => {
