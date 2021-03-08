@@ -3,6 +3,7 @@ import config from '@/config/index'
 import { notification } from 'antd'
 import { store } from '@/utils/store'
 import { TOKEN } from './constant'
+import { logOutUtils } from '.'
 
 const instance = axios.create({
   baseURL: config.baseUrl,
@@ -35,7 +36,7 @@ instance.interceptors.response.use(
           description: request.responseText,
           type: 'error',
         })
-        window.location.replace('/login')
+        logOutUtils()
         break
       default:
     }

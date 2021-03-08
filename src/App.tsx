@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { BrowserRouter as Router, Route, RouteProps, Switch, useHistory } from 'react-router-dom'
 import { Provider, useDispatch, useSelector } from 'react-redux'
 
@@ -13,11 +13,13 @@ import NotFond from '@/views/sys/noFond'
 import { useMount } from 'ahooks'
 import Lottie, { Options } from 'react-lottie'
 import * as animationData from '@/assets/loading-spinner.json'
+import { cloneDeep } from 'lodash'
 import { getTokenValue, getUserInfo, logOutUtils } from './utils'
 import { store, RootState, Dispatch } from './store/store'
 import styles from './App.module.less'
 import { SysMenu } from './type/sys/sys'
 import SysMenuCom from './views/sys/menu/menu'
+import Loading from './views/Loading'
 
 interface MenusShow extends RouteProps {
   id?: string
@@ -26,7 +28,7 @@ interface MenusShow extends RouteProps {
 function App() {
   const history = useHistory()
   // const userInfoState = useSelector((state: RootState) => state.sys)
-  // const dispatch = useDispatch<Dispatch>()
+  const dispatch = useDispatch<Dispatch>()
   const baseRoutes: MenusShow[] = [
     {
       path: '/login',
@@ -37,26 +39,26 @@ function App() {
       path: '/',
       component: SysHome,
       children: [
-        {
-          path: '/sys/user',
-          component: SysUserView,
-        },
-        {
-          path: '/sys/dept',
-          component: SysDeptView,
-        },
-        {
-          path: '/sys/role',
-          component: SysRole,
-        },
-        {
-          path: '/sys/menu',
-          component: SysMenuCom,
-        },
-        {
-          path: '*',
-          component: NotFond,
-        },
+        // {
+        //   path: '/sys/user',
+        //   component: SysUserView,
+        // },
+        // {
+        //   path: '/sys/dept',
+        //   component: SysDeptView,
+        // },
+        // {
+        //   path: '/sys/role',
+        //   component: SysRole,
+        // },
+        // {
+        //   path: '/sys/menu',
+        //   component: SysMenuCom,
+        // },
+        // {
+        //   path: '*',
+        //   component: NotFond,
+        // },
       ],
     },
     {
@@ -68,51 +70,51 @@ function App() {
   const [loading, setLoading] = useState(true)
   const routes = useRef<MenusShow[]>(baseRoutes)
 
-  // useMount(async () => {
-  //   setLoading(true)
-  //   // 获取token的情况下获取用户信息
-  //   const result = await getTokenValue()
-  //   if (result) {
-  //     getUserInfo()
-  //       .then((res) => {
-  //         console.log(res, 'userInfo')
+  useMount(async () => {
+    setLoading(true)
+    // 获取token的情况下获取用户信息
+    const result = await getTokenValue()
+    if (result) {
+      getUserInfo()
+        .then((res) => {
+          console.log(res, 'userInfo')
+          dispatch({ type: 'sys/setUserInfo', payload: res })
+          const resultV = cloneDeep(res)
 
-  //         const resultR: MenusShow[] = []
-  //         const treeObj: any = {}
-  //         res.menus.map((item: SysMenu) => {
-  //           treeObj[item.id] = item
-  //           item.parentId = Number(item.parentId)
-  //           // @ts-ignore
-  //           item.component = () => import(`./views${item.component}`)
-  //         })
-  //         for (const node of res.menus) {
-  //           if (node.parentId !== 0) {
-  //             if (treeObj[node.parentId].children) {
-  //               node.path = treeObj[node.parentId].path + node.path
-  //               treeObj[node.parentId].children.push(node)
-  //             } else {
-  //               treeObj[node.parentId].children = [node]
-  //             }
-  //           } else {
-  //             // @ts-ignore
-  //             resultR.push(node)
-  //           }
-  //         }
-  //         console.log(treeObj, 'obj')
-  //         console.log(resultR, 'rrr')
-  //         routes.current[1].children = resultR
-  //         console.log(routes.current)
-  //         setLoading(false)
-  //       })
-  //       .catch((error) => {
-  //         console.error(error)
-  //         setLoading(false)
-  //         message.error('获取用户信息失败,跳转到登陆页面')
-  //       })
-  //   } else {
-  //     setLoading(false)
-  //   }
-  // })
+          const resultR: MenusShow[] = []
+          const treeObj: any = {}
+          resultV.menus.map((item: SysMenu) => {
+            treeObj[item.id] = item
+            item.parentId = Number(item.parentId)
+            // @ts-ignore
+            item.component = lazy(() => import(item.component))
+          })
+          for (const node of resultV.menus) {
+            if (node.parentId !== 0) {
+              if (treeObj[node.parentId].children) {
+                node.path = treeObj[node.parentId].path + node.path
+                treeObj[node.parentId].children.push(node)
+              } else {
+                treeObj[node.parentId].children = [node]
+              }
+            } else {
+              // @ts-ignore
+              resultR.push(node)
+            }
+          }
+          routes.current[1].children = resultV.menus
+          console.log(resultV)
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.error(error)
+          setLoading(false)
+          message.error('获取用户信息失败,跳转到登陆页面')
+        })
+    } else {
+      setLoading(false)
+    }
+  })
 
   const defaultOptions: Options = {
     loop: true,
@@ -129,13 +131,11 @@ function App() {
               <Lottie options={defaultOptions} width={300} height={300} />
             </div>
           ) : (
-            <Router>
-              <Switch>
-                {routes.current.map((route) => (
-                  <RouteWithSubRoutes key={route.path} {...route} />
-                ))}
-              </Switch>
-            </Router>
+            <Suspense fallback={<Loading />}>
+              <Router>
+                <Switch>{routes.current.map((item: RouteProps, index) => RouteWithSubRoutes(item, index))}</Switch>
+              </Router>
+            </Suspense>
           )}
         </ConfigProvider>
       </Provider>
@@ -143,8 +143,16 @@ function App() {
   )
 }
 
-function RouteWithSubRoutes(route: any) {
-  return <Route path={route.path} render={(props) => <route.component {...props} routes={route.children} />} />
+function RouteWithSubRoutes(route: RouteProps, index: number) {
+  return <Route key={index} path={route.path} render={(props) => OnEnter(route.component, props, route)} />
+}
+
+function OnEnter(Component: any, props: any, route: RouteProps) {
+  return (
+    <>
+      <Component {...props} routes={route.children} />
+    </>
+  )
 }
 
 export { App, RouteWithSubRoutes }

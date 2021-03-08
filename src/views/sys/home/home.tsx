@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import type { MenuDataItem } from '@ant-design/pro-layout'
 import ProLayout, { PageContainer } from '@ant-design/pro-layout'
-import { RouteProps, useHistory, Switch } from 'react-router-dom'
+import { RouteProps, useHistory, Switch, BrowserRouter } from 'react-router-dom'
 import { Ulog } from '@/utils/log'
 import { RouteWithSubRoutes } from '@/App'
 import { store } from '@/utils/store'
@@ -72,8 +72,9 @@ const Home = (props: Props) => {
       >
         <PageContainer content="欢迎使用">
           <Switch>
-            {props.routes.map((route) => (
-              <RouteWithSubRoutes key={route.path} {...route} />
+            {props.routes.map((route, index) => (
+              // eslint-disable-next-line react/jsx-key
+              <RouteWithSubRoutes {...route} />
             ))}
           </Switch>
         </PageContainer>
