@@ -69,10 +69,12 @@ module.exports = {
   },
   output: {
     filename: `js/[name]${isDev ? '' : '.[fullhash:8]'}.js`,
+    chunkFilename: '[name].bundle.js',
     path: path.resolve(PROJECT_PATH, './dist'),
     publicPath: '/',
   },
   optimization: {
+    runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',
     },
@@ -159,7 +161,7 @@ module.exports = {
       //   include: path.resolve('src'),
       // },
       {
-        test: /\.(tsx?|js)$/,
+        test: /\.(tsx?|js|jsx)$/,
         loader: 'babel-loader',
         options: { cacheDirectory: true, plugins: [isDev && require.resolve('react-refresh/babel')] },
         exclude: /node_modules/,

@@ -108,6 +108,8 @@ module.exports = {
     'react/display-name': OFF,
     'no-restricted-syntax': OFF,
     'unicorn/no-array-for-each': OFF,
+    'react/no-array-index-key': OFF,
+    'promise/catch-or-return': OFF,
     // indent: [ERROR, 2, { SwitchCase: 1 }],
     'linebreak-style': [ERROR, 'unix'],
     quotes: [ERROR, 'single'],

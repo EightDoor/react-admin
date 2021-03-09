@@ -51,7 +51,7 @@ export interface SysMenu extends BaseType {
   // 路径
   path: string
   // 组件地址
-  component: string
+  component: any
   // 重定向地址
   redirect: string
   // 图标
